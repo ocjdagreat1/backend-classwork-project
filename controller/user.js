@@ -128,7 +128,7 @@ try {
 }
 
 //delete user
-export const 
+export const deleteUser
  = async (req,res) =>{
   const userId = req.params.id
   try {
