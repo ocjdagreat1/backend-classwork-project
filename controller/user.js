@@ -128,7 +128,8 @@ try {
 }
 
 //delete user
-export const deleteUser = async (req,res) =>{
+export const 
+ = async (req,res) =>{
   const userId = req.params.id
   try {
     const user = await cohortFour.findByIdAndDelete(userId)

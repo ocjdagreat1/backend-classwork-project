@@ -27,12 +27,20 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import express from "express";
+import cors from "cors";
 import userRoute from "./route/user.js";
 
 dotenv.config();
 
-
 const server = express();
+
+// FIX: Enable CORS
+server.use(cors({
+  origin: "http://localhost:5000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 server.use(express.json());
 
 // Routes
@@ -41,11 +49,9 @@ server.use('/api/users', userRoute);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("connection successful"))
-  .catch(() => console.log("not connected"));
+  .catch((err) => console.log("not connected", err));
 
 // Start server
 server.listen(process.env.PORT, () => {
-  console.log("server is running on port 5000");
+  console.log(`server is running on port ${process.env.PORT}`);
 });
-
-
