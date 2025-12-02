@@ -36,10 +36,11 @@ const server = express();
 
 // FIX: Enable CORS
 server.use(cors({
-  origin: "http://localhost:5000",
+  origin: ["http://localhost:5173", "https://backend-classwork-project-2.onrender.com"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+
 
 server.use(express.json());
 
