@@ -29,6 +29,7 @@ import mongoose from 'mongoose';
 import express from "express";
 import cors from "cors";
 import userRoute from "./route/user.js";
+import productRoute from "./route/products.js"
 
 dotenv.config();
 
@@ -46,6 +47,7 @@ server.use(express.json());
 
 // Routes
 server.use('/api/users', userRoute);
+server.use('/api/product',productRoute );
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
