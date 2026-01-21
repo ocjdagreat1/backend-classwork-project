@@ -32,18 +32,36 @@ import userRoute from "./route/user.js";
 import productRoute from "./route/products.js"
 
 dotenv.config();
-
 const server = express();
+server.use(express.json());
 
 // FIX: Enable CORS
-server.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+const allowedOrigins = [
+  //"http://backend-classwork-project-2.onrender.com",
+  //"https://backend-classwork-project-2.onrender.com",
+  "https://tesla-lgta.vercel.app",
+  "http://localhost:5173",
+  //"https://hgsccdigitalskills.vercel.app",
+];
+
+server.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // mobile apps, Postman
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 
-server.use(express.json());
+
 
 // Routes
 server.use('/api/users', userRoute);

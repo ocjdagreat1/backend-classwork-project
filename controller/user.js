@@ -42,15 +42,20 @@ const hashPassword = await bcrypt.hash(password,salt)
 
 
 //GET ALL REGISTERED STUDENTS
-export const getAllStudents = async(req,res) =>{
-  try{
-let  students = await cohortFour.find().select('-password')
-res.status(200).json({message:"users retrived successfully",students})
-  }catch(error){
-res.status(500).json({message:"server error",error})
-  }
-}
+export const getAllStudents = async (req, res) => {
+  try {
+    console.log("Request user (from token):", req.user);
 
+    // Query all users from database
+    const users = await cohortFour.find({}).select("-password"); // exclude passwords
+    console.log("Users found:", users.length);
+
+    res.status(200).json(users); // send array directly
+  } catch (err) {
+    console.error("Error fetching users:", err.message);
+    res.status(500).json({ message: "Server error fetching users" });
+  }
+};
 
 
 //Login REGISTERED STUDENT
