@@ -37,11 +37,12 @@ server.use(express.json());
 
 // FIX: Enable CORS
 const allowedOrigins = [
-  //"http://backend-classwork-project-2.onrender.com",
-  //"https://backend-classwork-project-2.onrender.com",
-  "https://tesla-lgta.vercel.app",
-  "http://localhost:5173",
-  //"https://hgsccdigitalskills.vercel.app",
+"http://tesla-com-psi.vercel.app",
+"https://tesla-com-psi.vercel.app",
+"https://backend-classwork-project-2.onrender.com",
+//"https://tesla-lgta.vercel.app",
+"http://localhost:5173",
+//"https://hgsccdigitalskills.vercel.app",
 ];
 
 server.use(
