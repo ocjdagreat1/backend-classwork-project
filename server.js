@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
   console.log('not connected')
 })*/
 
-import dotenv from 'dotenv';
+/*import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import express from "express";
 import cors from "cors";
@@ -76,4 +76,56 @@ mongoose.connect(process.env.MONGO_URL)
 // Start server
 server.listen(process.env.PORT, () => {
   console.log(`server is running on port ${process.env.PORT}`);
+});*/
+
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import express from "express";
+import cors from "cors";
+import userRoute from "./route/user.js";
+import productRoute from "./route/products.js";
+
+dotenv.config();
+
+const server = express();
+server.use(express.json());
+
+const allowedOrigins = [
+  "https://tesla-com-psi.vercel.app",
+  "http://localhost:5173"
+];
+
+// ✅ CORS (must be BEFORE routes)
+server.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Postman / mobile
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// ✅ IMPORTANT: handle preflight
+server.options("*", cors());
+
+// Routes
+server.use("/api/users", userRoute);
+server.use("/api/product", productRoute);
+
+// MongoDB
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB error:", err));
+
+// Server
+server.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
