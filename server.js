@@ -1,83 +1,3 @@
-/*import dotenv from 'dotenv';
-import mongoose from 'mongoose'
-import express from "express";
-import userRoute from "./route/user.js"
-//const { default: mongoose } = require('mongoose');
-
-const server = express()
-server.use(express.json());
-dotenv.config()
-server.listen(5000,()=>{
-  console.log(`server is running in port${process.env.PORT}`)
-})
-//Routes
-server.use('api/users',userRoute)
-
-console.log("my Name is OCJ")
-
-//server.get('/',(req,res)=>{
-  //res.send('Hello world')
-//})
-mongoose.connect(process.env.MONGO_URL).then(()=>{
-  console.log("connection successful")
-}).catch(()=>{
-  console.log('not connected')
-})*/
-
-/*import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import express from "express";
-import cors from "cors";
-import userRoute from "./route/user.js";
-import productRoute from "./route/products.js"
-
-dotenv.config();
-const server = express();
-server.use(express.json());
-
-// FIX: Enable CORS
-const allowedOrigins = [
-"http://tesla-com-psi.vercel.app",
-"https://tesla-com-psi.vercel.app",
-"https://backend-classwork-project-2.onrender.com",
-//"https://tesla-lgta.vercel.app",
-"http://localhost:5173",
-//"https://hgsccdigitalskills.vercel.app",
-];
-
-server.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // mobile apps, Postman
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-
-
-
-// Routes
-server.use('/api/users', userRoute);
-server.use('/api/product',productRoute );
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => console.log("connection successful"))
-  .catch((err) => console.log("not connected", err));
-
-// Start server
-server.listen(process.env.PORT, () => {
-  console.log(`server is running on port ${process.env.PORT}`);
-});*/
-
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import express from "express";
@@ -90,6 +10,8 @@ dotenv.config();
 const server = express();
 server.use(express.json());
 
+/* ================= CORS ================= */
+
 const allowedOrigins = [
   "https://tesla-com-psi.vercel.app",
   "https://house-project-six.vercel.app",
@@ -98,37 +20,50 @@ const allowedOrigins = [
   "http://localhost:5175"
 ];
 
-// ✅ CORS (must be BEFORE routes)
 server.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // Postman / mobile
+      if (!origin) return callback(null, true); // Postman / Mobile Apps
+
       if (allowedOrigins.includes(origin)) {
-        callback(null, true);
+        return callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        return callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// ✅ IMPORTANT: handle preflight
-server.options("*", cors());
+server.options("", cors());
 
-// Routes
+/* ================= ROUTES ================= */
+
+// Health check route (IMPORTANT for Render)
+server.get("/", (req, res) => {
+  res.status(200).send("API is running...");
+});
+
 server.use("/api/users", userRoute);
 server.use("/api/product", productRoute);
 
-// MongoDB
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB error:", err));
+/* ================= START SERVER ================= */
 
-// Server
-server.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("MongoDB connected successfully");
+
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("Server startup failed:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
