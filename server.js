@@ -92,7 +92,10 @@ server.use(express.json());
 
 const allowedOrigins = [
   "https://tesla-com-psi.vercel.app",
-  "http://localhost:5173"
+  "https://house-project-six.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175"
 ];
 
 // ✅ CORS (must be BEFORE routes)
